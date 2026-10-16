@@ -9,6 +9,13 @@ Based on [CS2-Poor-MapAdvertisements](https://github.com/Letaryat/CS2-Poor-MapAd
 - Each player has one spray on the map. A new spray replaces the old one.
 - The choice is saved in the [Clientprefs](https://github.com/Cruze03/Clientprefs) cookie `spray_selected` (MySQL or SQLite, as set in Clientprefs). Without Clientprefs the choice is lost when the server restarts.
 
+<p align="center">
+    <img src="img/menu.jpg" width="49%">
+    <img src="img/spray.jpg" width="49%">
+</p>
+
+<sub>Sprays in the screenshots: [SapphyStickers Collection](https://yueou.booth.pm/items/7076197) by 蛸乃ゆえ (illustration: 刺鼻). They are not included in this repository.</sub>
+
 ## [📌] Requirements
 - CounterStrikeSharp **1.0.374 or newer** (custom HUD panel and ray trace API).
 - [Clientprefs](https://github.com/Cruze03/Clientprefs) v1.0.7 or newer, to save the choice. The first build downloads `ClientprefsApi.dll` from the Clientprefs v1.0.7 release into `lib/`; the server loads it from `shared/ClientprefsApi/`.
