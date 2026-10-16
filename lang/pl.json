@@ -1,0 +1,14 @@
+{
+	"Prefix": "{lime}[Sprays]{default} ",
+	"NoAccess": "{red}Nie masz dostępu do tej komendy!",
+	"NoSprays": "{red}Na tym serwerze nie skonfigurowano żadnych sprayów.",
+	"MenuFailed": "{red}Nie udało się otworzyć menu sprayów.",
+	"MustBeAlive": "{red}Musisz żyć, aby użyć sprayu.",
+	"NoSpraySelected": "Nie wybrałeś jeszcze sprayu. Wpisz {green}!sprays{default}, aby go wybrać.",
+	"Cooldown": "Możesz użyć sprayu ponownie za {orange}{0}{default} s.",
+	"TooFar": "{red}Spójrz na pobliską ścianę lub podłogę, aby użyć sprayu.",
+	"SprayFailed": "{red}Nie udało się umieścić sprayu.",
+	"SpraySelected": "Wybrałeś {green}{0}{default}. Wpisz {green}!spray{default}, aby go użyć.",
+	"Menu_Header": "WYBIERZ SPRAY",
+	"Menu_Close": "Zamknij"
+}

@@ -1,0 +1,14 @@
+{
+	"Prefix": "{lime}[噴漆]{default} ",
+	"NoAccess": "{red}你沒有使用這個指令的權限！",
+	"NoSprays": "{red}伺服器沒有設定任何噴漆。",
+	"MenuFailed": "{red}無法開啟噴漆選單。",
+	"MustBeAlive": "{red}必須存活才能噴漆。",
+	"NoSpraySelected": "你還沒有選擇噴漆，請輸入 {green}!sprays{default} 選擇。",
+	"Cooldown": "{orange}{0}{default} 秒後才能再次噴漆。",
+	"TooFar": "{red}請對準附近的牆壁或地面再噴漆。",
+	"SprayFailed": "{red}無法放置噴漆。",
+	"SpraySelected": "已選擇 {green}{0}{default}，輸入 {green}!spray{default} 使用。",
+	"Menu_Header": "選擇噴漆",
+	"Menu_Close": "關閉"
+}

@@ -1,0 +1,23 @@
+<root>
+	<styles>
+		<include src="s2r://panorama/styles/custom_game/sprays.vcss_c" />
+		<include src="s2r://panorama/styles/custom_game/sprays_images.vcss_c" />
+	</styles>
+	<!-- The custom HUD only accepts Panel/Label/Button with id, class, text and hittest. -->
+	<Panel class="spray-root" hittest="false">
+		<Panel id="spray_dialog" class="spray-dialog" hittest="false">
+			<Label id="spray_header" class="spray-header" text="{s:spray_header}" hittest="false" />
+			<Panel class="spray-grid" hittest="false">
+				<Panel class="spray-row" hittest="false"><Button id="spray_card_1" class="spray-card"><Panel id="spray_img_1" class="spray-img" hittest="false" /><Label id="spray_name_1" class="spray-name" text="{s:spray_name_1}" hittest="false" /></Button><Button id="spray_card_2" class="spray-card"><Panel id="spray_img_2" class="spray-img" hittest="false" /><Label id="spray_name_2" class="spray-name" text="{s:spray_name_2}" hittest="false" /></Button><Button id="spray_card_3" class="spray-card"><Panel id="spray_img_3" class="spray-img" hittest="false" /><Label id="spray_name_3" class="spray-name" text="{s:spray_name_3}" hittest="false" /></Button><Button id="spray_card_4" class="spray-card"><Panel id="spray_img_4" class="spray-img" hittest="false" /><Label id="spray_name_4" class="spray-name" text="{s:spray_name_4}" hittest="false" /></Button></Panel>
+				<Panel class="spray-row" hittest="false"><Button id="spray_card_5" class="spray-card"><Panel id="spray_img_5" class="spray-img" hittest="false" /><Label id="spray_name_5" class="spray-name" text="{s:spray_name_5}" hittest="false" /></Button><Button id="spray_card_6" class="spray-card"><Panel id="spray_img_6" class="spray-img" hittest="false" /><Label id="spray_name_6" class="spray-name" text="{s:spray_name_6}" hittest="false" /></Button><Button id="spray_card_7" class="spray-card"><Panel id="spray_img_7" class="spray-img" hittest="false" /><Label id="spray_name_7" class="spray-name" text="{s:spray_name_7}" hittest="false" /></Button><Button id="spray_card_8" class="spray-card"><Panel id="spray_img_8" class="spray-img" hittest="false" /><Label id="spray_name_8" class="spray-name" text="{s:spray_name_8}" hittest="false" /></Button></Panel>
+				<Panel class="spray-row" hittest="false"><Button id="spray_card_9" class="spray-card"><Panel id="spray_img_9" class="spray-img" hittest="false" /><Label id="spray_name_9" class="spray-name" text="{s:spray_name_9}" hittest="false" /></Button><Button id="spray_card_10" class="spray-card"><Panel id="spray_img_10" class="spray-img" hittest="false" /><Label id="spray_name_10" class="spray-name" text="{s:spray_name_10}" hittest="false" /></Button><Button id="spray_card_11" class="spray-card"><Panel id="spray_img_11" class="spray-img" hittest="false" /><Label id="spray_name_11" class="spray-name" text="{s:spray_name_11}" hittest="false" /></Button><Button id="spray_card_12" class="spray-card"><Panel id="spray_img_12" class="spray-img" hittest="false" /><Label id="spray_name_12" class="spray-name" text="{s:spray_name_12}" hittest="false" /></Button></Panel>
+			</Panel>
+			<Panel class="spray-foot" hittest="false">
+				<Button id="spray_prev" class="spray-btn"><Label class="spray-btn-label" text="&lt;" hittest="false" /></Button>
+				<Label id="spray_page" class="spray-page" text="{s:spray_page}" hittest="false" />
+				<Button id="spray_next" class="spray-btn"><Label class="spray-btn-label" text="&gt;" hittest="false" /></Button>
+				<Button id="spray_close" class="spray-btn spray-close"><Label class="spray-btn-label" text="{s:spray_close}" hittest="false" /></Button>
+			</Panel>
+		</Panel>
+	</Panel>
+</root>

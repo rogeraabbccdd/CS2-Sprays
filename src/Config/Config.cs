@@ -1,0 +1,45 @@
+﻿using CounterStrikeSharp.API.Core;
+using CS2_Sprays.Models;
+using System.Text.Json.Serialization;
+
+namespace CS2_Sprays.Config
+{
+    public class PluginConfig : BasePluginConfig
+    {
+        [JsonPropertyName("ConfigVersion")]
+        public override int Version { get; set; } = 1;
+
+        // Empty = everyone can use sprays
+        [JsonPropertyName("Permission")]
+        public string Permission { get; set; } = "";
+
+        [JsonPropertyName("Sprays")]
+        public List<SprayModel> Sprays { get; set; } =
+        [
+            new SprayModel { Name = "Example", Material = "materials/sprays/example.vmat", Image = "example" }
+        ];
+
+        [JsonPropertyName("Panorama Layout")]
+        public string PanoramaLayout { get; set; } = "panorama/layout/custom_game/sprays.xml";
+
+        [JsonPropertyName("Spray Size")]
+        public float SpraySize { get; set; } = 64;
+
+        [JsonPropertyName("Spray Depth")]
+        public int SprayDepth { get; set; } = 12;
+
+        // Max distance between the player's eyes and the wall
+        [JsonPropertyName("Spray Distance")]
+        public float SprayDistance { get; set; } = 150;
+
+        // Seconds between two sprays of the same player
+        [JsonPropertyName("Spray Cooldown")]
+        public float SprayCooldown { get; set; } = 30;
+
+        [JsonPropertyName("Spray Sound")]
+        public string SpraySound { get; set; } = "SprayCan.Paint";
+
+        [JsonPropertyName("Debug Mode")]
+        public bool Debug { get; set; } = false;
+    }
+}

@@ -1,0 +1,30 @@
+﻿using CounterStrikeSharp.API.Core;
+using CounterStrikeSharp.API.Modules.Utils;
+
+namespace CS2_Sprays.Managers;
+
+public class EventManager(CS2_Sprays plugin)
+{
+    private readonly CS2_Sprays _plugin = plugin;
+
+    public void RegisterEvents()
+    {
+        _plugin.RegisterListener<Listeners.OnServerPrecacheResources>((ResourceManifest manifest) =>
+        {
+            manifest.AddResource(SprayManager.SoundEventsFile);
+            foreach (var spray in _plugin.Config.Sprays)
+            {
+                manifest.AddResource(spray.Material);
+            }
+        });
+
+        _plugin.RegisterListener<Listeners.OnMapStart>(OnMapStart);
+    }
+
+    private void OnMapStart(string mapName)
+    {
+        // The panel and the sprays are entities of the previous map
+        _plugin.SprayPanel!.Destroy();
+        _plugin.SprayManager!.OnMapStart();
+    }
+}

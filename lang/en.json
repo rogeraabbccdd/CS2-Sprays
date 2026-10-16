@@ -1,0 +1,14 @@
+{
+	"Prefix": "{lime}[Sprays]{default} ",
+	"NoAccess": "{red}You have no access to this command!",
+	"NoSprays": "{red}No sprays are configured on this server.",
+	"MenuFailed": "{red}The spray menu could not be opened.",
+	"MustBeAlive": "{red}You must be alive to spray.",
+	"NoSpraySelected": "You have not chosen a spray yet. Type {green}!sprays{default} to choose one.",
+	"Cooldown": "You can spray again in {orange}{0}{default} seconds.",
+	"TooFar": "{red}Look at a nearby wall or floor to spray.",
+	"SprayFailed": "{red}The spray could not be placed.",
+	"SpraySelected": "You chose {green}{0}{default}. Type {green}!spray{default} to use it.",
+	"Menu_Header": "CHOOSE A SPRAY",
+	"Menu_Close": "Close"
+}

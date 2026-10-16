@@ -1,0 +1,35 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <RootNamespace>CS2_Sprays</RootNamespace>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+	<ItemGroup>
+		<PackageReference Include="CounterStrikeSharp.API" Version="1.0.376" />
+	</ItemGroup>
+
+	<!-- Clientprefs v1.0.7 API. Loaded from shared/ClientprefsApi on the server, so not copied to the output.
+	     Clientprefs has no license, so the dll is not in the repo: the first build downloads it from the release. -->
+	<PropertyGroup>
+		<ClientprefsVersion>1.0.7</ClientprefsVersion>
+		<ClientprefsApiDll>$(MSBuildThisFileDirectory)..\lib\ClientprefsApi.dll</ClientprefsApiDll>
+		<ClientprefsTemp>$(BaseIntermediateOutputPath)clientprefs\</ClientprefsTemp>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<Reference Include="ClientprefsApi">
+			<HintPath>$(ClientprefsApiDll)</HintPath>
+			<Private>false</Private>
+		</Reference>
+	</ItemGroup>
+
+	<Target Name="DownloadClientprefsApi" BeforeTargets="ResolveAssemblyReferences" Condition="!Exists('$(ClientprefsApiDll)')">
+		<DownloadFile SourceUrl="https://github.com/Cruze03/Clientprefs/releases/download/v$(ClientprefsVersion)/Clientprefs_v$(ClientprefsVersion).zip" DestinationFolder="$(ClientprefsTemp)" />
+		<Unzip SourceFiles="$(ClientprefsTemp)Clientprefs_v$(ClientprefsVersion).zip" DestinationFolder="$(ClientprefsTemp)" />
+		<Copy SourceFiles="$(ClientprefsTemp)addons\counterstrikesharp\shared\ClientprefsApi\ClientprefsApi.dll" DestinationFolder="$(MSBuildThisFileDirectory)..\lib" />
+	</Target>
+
+</Project>
