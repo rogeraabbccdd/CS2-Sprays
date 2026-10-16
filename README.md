@@ -16,7 +16,7 @@ Based on [CS2-Poor-MapAdvertisements](https://github.com/Letaryat/CS2-Poor-MapAd
 
 ## [📌] Setup
 1. Build with the .NET 10 SDK: `dotnet build CS2-Sprays.sln -c Release`.
-2. Copy the build output and `lang/` to `addons/counterstrikesharp/plugins/CS2-Sprays/`.
+2. Copy the build output (`src/bin/Release/net10.0/`, including `lang/`) to `addons/counterstrikesharp/plugins/CS2-Sprays/`.
 3. Make the workshop addon (next section) and add it to the server's mounted addons.
 4. Restart the server. The config is created in `configs/plugins/CS2-Sprays/`.
 
