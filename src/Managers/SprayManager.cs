@@ -1,5 +1,6 @@
 using CounterStrikeSharp.API;
 using CounterStrikeSharp.API.Core;
+using CounterStrikeSharp.API.Modules.Admin;
 using CounterStrikeSharp.API.Modules.Utils;
 using CS2_Sprays.Models;
 using Clientprefs.API;
@@ -70,6 +71,11 @@ public class SprayManager(CS2_Sprays plugin)
         });
     }
 
+    public bool HasPermission(CCSPlayerController player)
+    {
+        return string.IsNullOrWhiteSpace(_plugin.Config.Permission) || AdminManager.PlayerHasPermissions(player, _plugin.Config.Permission);
+    }
+
     public SprayModel? GetSelected(CCSPlayerController player)
     {
         string? name = CookieReady
@@ -124,19 +130,26 @@ public class SprayManager(CS2_Sprays plugin)
         _lastSpray.Remove(player.SteamID);
     }
 
-    public void TrySpray(CCSPlayerController player)
+    // quiet: no chat messages on failure (used by the E key, which is pressed for many things)
+    public void TrySpray(CCSPlayerController player, bool quiet = false)
     {
+        void Fail(string message)
+        {
+            if (!quiet)
+                player.PrintToChat($"{_plugin.Localizer["Prefix"]}{message}");
+        }
+
         var pawn = player.PlayerPawn.Value;
         if (pawn == null || !pawn.IsValid || pawn.LifeState != (byte)LifeState_t.LIFE_ALIVE)
         {
-            player.PrintToChat($"{_plugin.Localizer["Prefix"]}{_plugin.Localizer["MustBeAlive"]}");
+            Fail(_plugin.Localizer["MustBeAlive"]);
             return;
         }
 
         var spray = GetSelected(player);
         if (spray == null)
         {
-            player.PrintToChat($"{_plugin.Localizer["Prefix"]}{_plugin.Localizer["NoSpraySelected"]}");
+            Fail(_plugin.Localizer["NoSpraySelected"]);
             return;
         }
 
@@ -145,7 +158,7 @@ public class SprayManager(CS2_Sprays plugin)
             var left = last + _plugin.Config.SprayCooldown - Server.CurrentTime;
             if (left > 0)
             {
-                player.PrintToChat($"{_plugin.Localizer["Prefix"]}{_plugin.Localizer["Cooldown", Math.Ceiling(left)]}");
+                Fail(_plugin.Localizer["Cooldown", Math.Ceiling(left)]);
                 return;
             }
         }
@@ -158,7 +171,7 @@ public class SprayManager(CS2_Sprays plugin)
         var hit = trace.HitPoint;
         if (!trace.DidHit() || Distance(eyePos, hit) > _plugin.Config.SprayDistance || trace.HitEntity() is { IsValid: true, DesignerName: "player" })
         {
-            player.PrintToChat($"{_plugin.Localizer["Prefix"]}{_plugin.Localizer["TooFar"]}");
+            Fail(_plugin.Localizer["TooFar"]);
             return;
         }
 
@@ -169,7 +182,7 @@ public class SprayManager(CS2_Sprays plugin)
         var decal = CreateDecal(position, angle, spray.Material);
         if (decal == null)
         {
-            player.PrintToChat($"{_plugin.Localizer["Prefix"]}{_plugin.Localizer["SprayFailed"]}");
+            Fail(_plugin.Localizer["SprayFailed"]);
             return;
         }
 

@@ -49,6 +49,10 @@ namespace CS2_Sprays.Config
         [JsonPropertyName("Reset Cooldown On Kill")]
         public bool ResetCooldownOnKill { get; set; } = true;
 
+        // E also defuses, picks up weapons and opens doors, so this is off by default
+        [JsonPropertyName("Spray With Use Key")]
+        public bool SprayWithUseKey { get; set; } = false;
+
         [JsonPropertyName("Debug Mode")]
         public bool Debug { get; set; } = false;
     }

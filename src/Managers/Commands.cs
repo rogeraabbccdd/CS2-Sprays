@@ -1,5 +1,4 @@
 ﻿using CounterStrikeSharp.API.Core;
-using CounterStrikeSharp.API.Modules.Admin;
 using CounterStrikeSharp.API.Modules.Commands;
 
 namespace CS2_Sprays.Managers;
@@ -16,7 +15,7 @@ public class CommandsManager(CS2_Sprays plugin)
 
     private bool CanUse(CCSPlayerController player)
     {
-        if (string.IsNullOrWhiteSpace(_plugin.Config.Permission) || AdminManager.PlayerHasPermissions(player, _plugin.Config.Permission))
+        if (_plugin.SprayManager!.HasPermission(player))
             return true;
 
         player.PrintToChat($"{_plugin.Localizer["Prefix"]}{_plugin.Localizer["NoAccess"]}");

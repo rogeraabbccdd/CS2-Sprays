@@ -75,6 +75,7 @@ The custom HUD cannot load images at runtime (only `Panel`, `Label` and `Button`
 | Keep Sprays Between Rounds (bool) | Put every player's spray back after a round restart. Off = sprays are cleared every round |
 | Reset Cooldown On Round Start (bool) | Everyone can spray again when a round starts |
 | Reset Cooldown On Kill (bool) | A kill resets the killer's cooldown |
+| Spray With Use Key (bool) | Spray by pressing E (+use). Off by default, because E also defuses, picks up weapons and opens doors |
 | Debug Mode (bool) | Log errors |
 
 ### [📝] Config example
@@ -93,6 +94,7 @@ The custom HUD cannot load images at runtime (only `Panel`, `Label` and `Button`
   "Keep Sprays Between Rounds": true,
   "Reset Cooldown On Round Start": true,
   "Reset Cooldown On Kill": true,
+  "Spray With Use Key": false,
   "Debug Mode": false,
   "ConfigVersion": 1
 }

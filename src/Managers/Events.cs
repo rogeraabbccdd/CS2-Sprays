@@ -1,4 +1,5 @@
-﻿using CounterStrikeSharp.API.Core;
+﻿using CounterStrikeSharp.API;
+using CounterStrikeSharp.API.Core;
 using CounterStrikeSharp.API.Modules.Utils;
 
 namespace CS2_Sprays.Managers;
@@ -19,6 +20,7 @@ public class EventManager(CS2_Sprays plugin)
         });
 
         _plugin.RegisterListener<Listeners.OnMapStart>(OnMapStart);
+        _plugin.RegisterListener<Listeners.OnPlayerButtonsChanged>(OnPlayerButtonsChanged);
         _plugin.RegisterEventHandler<EventRoundPoststart>(OnRoundPoststart);
         _plugin.RegisterEventHandler<EventPlayerDeath>(OnPlayerDeath);
     }
@@ -48,5 +50,16 @@ public class EventManager(CS2_Sprays plugin)
             _plugin.SprayManager!.ResetCooldown(attacker);
 
         return HookResult.Continue;
+    }
+
+    private void OnPlayerButtonsChanged(CCSPlayerController player, PlayerButtons pressed, PlayerButtons released)
+    {
+        if (!_plugin.Config.SprayWithUseKey || (pressed & PlayerButtons.Use) == 0)
+            return;
+
+        if (!player.IsValid || player.IsBot || !_plugin.SprayManager!.HasPermission(player))
+            return;
+
+        _plugin.SprayManager.TrySpray(player, quiet: true);
     }
 }
