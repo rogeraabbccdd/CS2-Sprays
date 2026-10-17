@@ -96,6 +96,9 @@ public class SprayManager(CS2_Sprays plugin)
     // Round restarts remove every env_decal: put the sprays back, or forget them
     public void OnRoundPoststart()
     {
+        if (_plugin.Config.ResetCooldownOnRoundStart)
+            _lastSpray.Clear();
+
         foreach (var (steamId, placed) in _sprays.ToList())
         {
             // In case the decal survived the cleanup
@@ -114,6 +117,11 @@ public class SprayManager(CS2_Sprays plugin)
 
         if (!_plugin.Config.KeepSpraysBetweenRounds)
             _sprays.Clear();
+    }
+
+    public void ResetCooldown(CCSPlayerController player)
+    {
+        _lastSpray.Remove(player.SteamID);
     }
 
     public void TrySpray(CCSPlayerController player)

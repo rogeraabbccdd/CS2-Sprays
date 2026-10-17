@@ -43,6 +43,12 @@ namespace CS2_Sprays.Config
         [JsonPropertyName("Keep Sprays Between Rounds")]
         public bool KeepSpraysBetweenRounds { get; set; } = true;
 
+        [JsonPropertyName("Reset Cooldown On Round Start")]
+        public bool ResetCooldownOnRoundStart { get; set; } = true;
+
+        [JsonPropertyName("Reset Cooldown On Kill")]
+        public bool ResetCooldownOnKill { get; set; } = true;
+
         [JsonPropertyName("Debug Mode")]
         public bool Debug { get; set; } = false;
     }

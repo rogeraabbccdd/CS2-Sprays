@@ -73,6 +73,8 @@ The custom HUD cannot load images at runtime (only `Panel`, `Label` and `Button`
 | Spray Cooldown (float) | Seconds between two sprays of one player |
 | Spray Sound (string) | Sound event played on a successful spray |
 | Keep Sprays Between Rounds (bool) | Put every player's spray back after a round restart. Off = sprays are cleared every round |
+| Reset Cooldown On Round Start (bool) | Everyone can spray again when a round starts |
+| Reset Cooldown On Kill (bool) | A kill resets the killer's cooldown |
 | Debug Mode (bool) | Log errors |
 
 ### [📝] Config example
@@ -89,6 +91,8 @@ The custom HUD cannot load images at runtime (only `Panel`, `Label` and `Button`
   "Spray Cooldown": 30,
   "Spray Sound": "SprayCan.Paint",
   "Keep Sprays Between Rounds": true,
+  "Reset Cooldown On Round Start": true,
+  "Reset Cooldown On Kill": true,
   "Debug Mode": false,
   "ConfigVersion": 1
 }

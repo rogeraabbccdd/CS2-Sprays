@@ -20,6 +20,7 @@ public class EventManager(CS2_Sprays plugin)
 
         _plugin.RegisterListener<Listeners.OnMapStart>(OnMapStart);
         _plugin.RegisterEventHandler<EventRoundPoststart>(OnRoundPoststart);
+        _plugin.RegisterEventHandler<EventPlayerDeath>(OnPlayerDeath);
     }
 
     private void OnMapStart(string mapName)
@@ -34,6 +35,18 @@ public class EventManager(CS2_Sprays plugin)
         // The round restart removed the panel entity too
         _plugin.SprayPanel!.Destroy();
         _plugin.SprayManager!.OnRoundPoststart();
+        return HookResult.Continue;
+    }
+
+    private HookResult OnPlayerDeath(EventPlayerDeath @event, GameEventInfo info)
+    {
+        if (!_plugin.Config.ResetCooldownOnKill)
+            return HookResult.Continue;
+
+        var attacker = @event.Attacker;
+        if (attacker is { IsValid: true, IsBot: false } && attacker != @event.Userid)
+            _plugin.SprayManager!.ResetCooldown(attacker);
+
         return HookResult.Continue;
     }
 }
