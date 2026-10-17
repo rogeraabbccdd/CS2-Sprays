@@ -47,10 +47,13 @@ jobs:
       - name: Release notes
         run: |
           PREV=$(git describe --tags --abbrev=0 "$GITHUB_REF_NAME^" 2>/dev/null || true)
-          RANGE=${PREV:+$PREV..}$GITHUB_REF_NAME
           {
             echo "## Changes"
-            git log --no-merges --format='- %s' "$RANGE"
+            if [ -n "$PREV" ]; then
+              git log --no-merges --format='- %s' "$PREV..$GITHUB_REF_NAME"
+            else
+              echo "Initial release"
+            fi
             echo
             echo "## Install"
             echo "- \`CS2-Sprays-$GITHUB_REF_NAME.zip\`: extract into \`game/csgo/\`"
