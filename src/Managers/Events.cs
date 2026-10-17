@@ -19,6 +19,7 @@ public class EventManager(CS2_Sprays plugin)
         });
 
         _plugin.RegisterListener<Listeners.OnMapStart>(OnMapStart);
+        _plugin.RegisterEventHandler<EventRoundPoststart>(OnRoundPoststart);
     }
 
     private void OnMapStart(string mapName)
@@ -26,5 +27,13 @@ public class EventManager(CS2_Sprays plugin)
         // The panel and the sprays are entities of the previous map
         _plugin.SprayPanel!.Destroy();
         _plugin.SprayManager!.OnMapStart();
+    }
+
+    private HookResult OnRoundPoststart(EventRoundPoststart @event, GameEventInfo info)
+    {
+        // The round restart removed the panel entity too
+        _plugin.SprayPanel!.Destroy();
+        _plugin.SprayManager!.OnRoundPoststart();
+        return HookResult.Continue;
     }
 }

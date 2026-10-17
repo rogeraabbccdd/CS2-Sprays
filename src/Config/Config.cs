@@ -39,6 +39,10 @@ namespace CS2_Sprays.Config
         [JsonPropertyName("Spray Sound")]
         public string SpraySound { get; set; } = "SprayCan.Paint";
 
+        // Round restarts remove the decals; this puts every player's spray back
+        [JsonPropertyName("Keep Sprays Between Rounds")]
+        public bool KeepSpraysBetweenRounds { get; set; } = true;
+
         [JsonPropertyName("Debug Mode")]
         public bool Debug { get; set; } = false;
     }

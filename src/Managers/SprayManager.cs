@@ -20,8 +20,17 @@ public class SprayManager(CS2_Sprays plugin)
     private int _cookieId = -1;
     private readonly Dictionary<ulong, string> _selections = new();
 
-    // SteamID64 -> that player's spray on the map (one per player, a new one replaces it)
-    private readonly Dictionary<ulong, CHandle<CEnvDecal>> _sprays = new();
+    // SteamID64 -> that player's spray on the map (one per player, a new one replaces it).
+    // Position and material are kept so the spray can be put back after a round restart.
+    private sealed class PlacedSpray(string material, Vector position, QAngle angle, CEnvDecal decal)
+    {
+        public string Material { get; } = material;
+        public Vector Position { get; } = position;
+        public QAngle Angle { get; } = angle;
+        public CHandle<CEnvDecal> Decal { get; set; } = new(decal.EntityHandle.Raw);
+    }
+
+    private readonly Dictionary<ulong, PlacedSpray> _sprays = new();
     private readonly Dictionary<ulong, float> _lastSpray = new();
 
     private bool CookieReady => _clientprefs != null && _cookieId != -1;
@@ -84,6 +93,29 @@ public class SprayManager(CS2_Sprays plugin)
         _lastSpray.Clear();
     }
 
+    // Round restarts remove every env_decal: put the sprays back, or forget them
+    public void OnRoundPoststart()
+    {
+        foreach (var (steamId, placed) in _sprays.ToList())
+        {
+            // In case the decal survived the cleanup
+            if (placed.Decal.Value is { IsValid: true } old)
+                old.Remove();
+
+            if (!_plugin.Config.KeepSpraysBetweenRounds)
+                continue;
+
+            var decal = CreateDecal(placed.Position, placed.Angle, placed.Material);
+            if (decal != null)
+                placed.Decal = new CHandle<CEnvDecal>(decal.EntityHandle.Raw);
+            else
+                _sprays.Remove(steamId);
+        }
+
+        if (!_plugin.Config.KeepSpraysBetweenRounds)
+            _sprays.Clear();
+    }
+
     public void TrySpray(CCSPlayerController player)
     {
         var pawn = player.PlayerPawn.Value;
@@ -124,18 +156,19 @@ public class SprayManager(CS2_Sprays plugin)
 
         var normal = trace.Normal;
         var position = new Vector(hit.X + normal.X, hit.Y + normal.Y, hit.Z + normal.Z);
+        var angle = AnglesFromNormal(normal, eyeAngles.Y);
 
-        var decal = CreateDecal(position, AnglesFromNormal(normal, eyeAngles.Y), spray.Material);
+        var decal = CreateDecal(position, angle, spray.Material);
         if (decal == null)
         {
             player.PrintToChat($"{_plugin.Localizer["Prefix"]}{_plugin.Localizer["SprayFailed"]}");
             return;
         }
 
-        if (_sprays.TryGetValue(player.SteamID, out var old) && old.Value is { IsValid: true } oldDecal)
+        if (_sprays.TryGetValue(player.SteamID, out var old) && old.Decal.Value is { IsValid: true } oldDecal)
             oldDecal.Remove();
 
-        _sprays[player.SteamID] = new CHandle<CEnvDecal>(decal.EntityHandle.Raw);
+        _sprays[player.SteamID] = new PlacedSpray(spray.Material, position, angle, decal);
         _lastSpray[player.SteamID] = Server.CurrentTime;
 
         pawn.EmitSound(_plugin.Config.SpraySound);

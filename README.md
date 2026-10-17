@@ -6,7 +6,7 @@ Based on [CS2-Poor-MapAdvertisements](https://github.com/Letaryat/CS2-Poor-MapAd
 
 - `!sprays` opens a card grid with the picture and name of every spray. Click a card to choose it.
 - `!spray` puts the chosen spray where you look and plays `SprayCan.Paint`. Players can bind it: `bind t css_spray`.
-- Each player has one spray on the map. A new spray replaces the old one.
+- Each player has one spray on the map. A new spray replaces the old one. Sprays stay after a round restart.
 - The choice is saved in the [Clientprefs](https://github.com/Cruze03/Clientprefs) cookie `spray_selected` (MySQL or SQLite, as set in Clientprefs). Without Clientprefs the choice is lost when the server restarts.
 
 <p align="center">
@@ -72,6 +72,7 @@ The custom HUD cannot load images at runtime (only `Panel`, `Label` and `Button`
 | Spray Distance (float) | Max distance between the player's eyes and the surface |
 | Spray Cooldown (float) | Seconds between two sprays of one player |
 | Spray Sound (string) | Sound event played on a successful spray |
+| Keep Sprays Between Rounds (bool) | Put every player's spray back after a round restart. Off = sprays are cleared every round |
 | Debug Mode (bool) | Log errors |
 
 ### [📝] Config example
@@ -87,6 +88,7 @@ The custom HUD cannot load images at runtime (only `Panel`, `Label` and `Button`
   "Spray Distance": 150,
   "Spray Cooldown": 30,
   "Spray Sound": "SprayCan.Paint",
+  "Keep Sprays Between Rounds": true,
   "Debug Mode": false,
   "ConfigVersion": 1
 }
