@@ -10,5 +10,6 @@
 	"SprayFailed": "{red}無法放置噴漆。",
 	"SpraySelected": "已選擇 {green}{0}{default}，輸入 {green}!spray{default} 使用。",
 	"Menu_Header": "選擇噴漆",
-	"Menu_Close": "關閉"
+	"Menu_Close": "關閉",
+	"Menu_Random": "隨機"
 }

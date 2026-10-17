@@ -88,6 +88,12 @@
 	background-repeat: no-repeat;
 }
 
+/* The Random card (config "Random Spray") */
+.spray-img.spray-random
+{
+	background-image: url("file://{images}/custom_game/sprays_random.png");
+}
+
 .spray-name
 {
 	width: 128px;

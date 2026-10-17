@@ -7,6 +7,7 @@ Based on [CS2-Poor-MapAdvertisements](https://github.com/Letaryat/CS2-Poor-MapAd
 - `!sprays` opens a card grid with the picture and name of every spray. Click a card to choose it.
 - `!spray` puts the chosen spray where you look and plays `SprayCan.Paint`. Players can bind it: `bind t css_spray`.
 - Each player has one spray on the map. A new spray replaces the old one. Sprays stay after a round restart.
+- The menu has a Random card: each spray picks a random picture.
 - The choice is saved in the [Clientprefs](https://github.com/Cruze03/Clientprefs) cookie `spray_selected` (MySQL or SQLite, as set in Clientprefs). Without Clientprefs the choice is lost when the server restarts.
 
 <p align="center">
@@ -35,6 +36,7 @@ Copy the contents of [`addon/`](addon/) into your addon's content folder (`<CS2>
 | `panorama/layout/custom_game/sprays.xml` | Menu layout |
 | `panorama/styles/custom_game/sprays.css` | Menu style |
 | `panorama/styles/custom_game/sprays_images.css` | One picture class per spray |
+| `panorama/images/custom_game/sprays_random.png` | Picture of the Random card |
 | `panorama/images/custom_game/sprays/example.png` | Example menu picture, 128x128 |
 | `materials/sprays/example.vmat`, `example.png`, `example_trans.png` | Example spray material |
 
@@ -72,6 +74,7 @@ The custom HUD cannot load images at runtime (only `Panel`, `Label` and `Button`
 | Spray Distance (float) | Max distance between the player's eyes and the surface |
 | Spray Cooldown (float) | Seconds between two sprays of one player |
 | Spray Sound (string) | Sound event played on a successful spray |
+| Random Spray (bool) | Show a Random card first in the menu. Players who have not chosen a spray get a random one |
 | Keep Sprays Between Rounds (bool) | Put every player's spray back after a round restart. Off = sprays are cleared every round |
 | Reset Cooldown On Round Start (bool) | Everyone can spray again when a round starts |
 | Reset Cooldown On Kill (bool) | A kill resets the killer's cooldown |
@@ -91,6 +94,7 @@ The custom HUD cannot load images at runtime (only `Panel`, `Label` and `Button`
   "Spray Distance": 150,
   "Spray Cooldown": 30,
   "Spray Sound": "SprayCan.Paint",
+  "Random Spray": true,
   "Keep Sprays Between Rounds": true,
   "Reset Cooldown On Round Start": true,
   "Reset Cooldown On Kill": true,

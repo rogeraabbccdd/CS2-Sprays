@@ -26,6 +26,7 @@ public class SprayPanel
     private const string EmptyClass = "spray-empty";
     private const string SelectedClass = "spray-selected";
     private const string ButtonOffClass = "spray-btn-off";
+    private const string RandomImageClass = "spray-random";
 
     private readonly CS2_Sprays _plugin;
     private CCSCustomHudLayout? _hud;
@@ -44,8 +45,12 @@ public class SprayPanel
         plugin.RegisterEventHandler<EventPlayerDisconnect>(OnPlayerDisconnect, HookMode.Pre);
     }
 
-    private List<Models.SprayModel> Sprays => _plugin.Config.Sprays;
-    private int PageCount => Math.Max(1, (Sprays.Count + PageSize - 1) / PageSize);
+    // Cards in menu order; null is the Random card
+    private List<Models.SprayModel?> Entries => _plugin.Config.RandomSpray ? [null, .. _plugin.Config.Sprays] : [.. _plugin.Config.Sprays];
+    private int PageCount(int count) => Math.Max(1, (count + PageSize - 1) / PageSize);
+
+    private static bool IsSelected(Models.SprayModel? entry, string? selection) =>
+        entry == null ? selection == Managers.SprayManager.RandomSelection : entry.Name == selection;
 
     // Opens the panel on the page holding the player's current spray
     public bool Open(CCSPlayerController player)
@@ -55,8 +60,8 @@ public class SprayPanel
             if (!EnsureHud(out var hud))
                 return false;
 
-            var selected = _plugin.SprayManager!.GetSelected(player);
-            int index = selected != null ? Sprays.IndexOf(selected) : 0;
+            var selection = _plugin.SprayManager!.GetSelection(player);
+            int index = Entries.FindIndex(e => IsSelected(e, selection));
             _pages[player.Slot] = Math.Max(0, index) / PageSize;
 
             Render(hud, player);
@@ -126,11 +131,13 @@ public class SprayPanel
     private void Render(CCSCustomHudLayout hud, CCSPlayerController player)
     {
         int page = _pages[player.Slot];
+        var entries = Entries;
+        int pageCount = PageCount(entries.Count);
         SetText(hud, player, HeaderPanel, "spray_header", _plugin.Localizer["Menu_Header"]);
-        SetText(hud, player, PagePanel, "spray_page", $"{page + 1} / {PageCount}");
+        SetText(hud, player, PagePanel, "spray_page", $"{page + 1} / {pageCount}");
         SetText(hud, player, ClosePanel, "spray_close", _plugin.Localizer["Menu_Close"]);
 
-        var selected = _plugin.SprayManager!.GetSelected(player);
+        var selection = _plugin.SprayManager!.GetSelection(player);
         if (!_appliedImages.TryGetValue(player.Slot, out var applied))
             _appliedImages[player.Slot] = applied = new string?[PageSize];
 
@@ -138,26 +145,26 @@ public class SprayPanel
         {
             int card = i + 1;
             int index = page * PageSize + i;
-            bool hasSpray = index < Sprays.Count;
+            bool hasSpray = index < entries.Count;
             // Empty slots stay in the layout (transparent) so the panel keeps its size
             hud.SetHasClassForPlayer(player, $"{CardPrefix}{card}", EmptyClass, !hasSpray);
             if (!hasSpray)
                 continue;
 
-            var spray = Sprays[index];
-            SetText(hud, player, $"{NamePrefix}{card}", $"spray_name_{card}", spray.Name);
+            var spray = entries[index];
+            SetText(hud, player, $"{NamePrefix}{card}", $"spray_name_{card}", spray?.Name ?? _plugin.Localizer["Menu_Random"]);
 
-            string imageClass = spray.ImageClass;
+            string imageClass = spray?.ImageClass ?? RandomImageClass;
             if (applied[i] is { } previous && previous != imageClass)
                 hud.SetHasClassForPlayer(player, $"{ImagePrefix}{card}", previous, false);
             hud.SetHasClassForPlayer(player, $"{ImagePrefix}{card}", imageClass, true);
             applied[i] = imageClass;
 
-            hud.SetHasClassForPlayer(player, $"{CardPrefix}{card}", SelectedClass, spray == selected);
+            hud.SetHasClassForPlayer(player, $"{CardPrefix}{card}", SelectedClass, IsSelected(spray, selection));
         }
 
         hud.SetHasClassForPlayer(player, PrevPanel, ButtonOffClass, page == 0);
-        hud.SetHasClassForPlayer(player, NextPanel, ButtonOffClass, page >= PageCount - 1);
+        hud.SetHasClassForPlayer(player, NextPanel, ButtonOffClass, page >= pageCount - 1);
     }
 
     // Written against the dialog and the label: the client's dialog-variable scope
@@ -193,7 +200,7 @@ public class SprayPanel
 
             if (buttonId == PrevPanel || buttonId == NextPanel)
             {
-                int next = Math.Clamp(page + (buttonId == NextPanel ? 1 : -1), 0, PageCount - 1);
+                int next = Math.Clamp(page + (buttonId == NextPanel ? 1 : -1), 0, PageCount(Entries.Count) - 1);
                 if (next != page)
                 {
                     _pages[slot] = next;
@@ -207,12 +214,13 @@ public class SprayPanel
                 && card >= 1 && card <= PageSize)
             {
                 int index = page * PageSize + card - 1;
-                if (index >= Sprays.Count)
+                var entries = Entries;
+                if (index >= entries.Count)
                     return;
 
-                var spray = Sprays[index];
-                _plugin.SprayManager!.Select(player, spray);
-                player.PrintToChat($"{_plugin.Localizer["Prefix"]}{_plugin.Localizer["SpraySelected", spray.Name]}");
+                var spray = entries[index];
+                _plugin.SprayManager!.Select(player, spray?.Name ?? Managers.SprayManager.RandomSelection);
+                player.PrintToChat($"{_plugin.Localizer["Prefix"]}{_plugin.Localizer["SpraySelected", spray?.Name ?? _plugin.Localizer["Menu_Random"]]}");
                 Close(player);
             }
         }

@@ -13,6 +13,9 @@ public class SprayManager(CS2_Sprays plugin)
     public const string SoundEventsFile = "soundevents/game_sounds_player.vsndevts";
     private const string CookieName = "spray_selected";
 
+    // Saved instead of a spray name when the player picks the Random card
+    public const string RandomSelection = "@random";
+
     private readonly CS2_Sprays _plugin = plugin;
 
     // Selections are saved in the Clientprefs cookie "spray_selected" (spray name).
@@ -33,6 +36,7 @@ public class SprayManager(CS2_Sprays plugin)
 
     private readonly Dictionary<ulong, PlacedSpray> _sprays = new();
     private readonly Dictionary<ulong, float> _lastSpray = new();
+    private readonly Random _random = new();
 
     private bool CookieReady => _clientprefs != null && _cookieId != -1;
 
@@ -76,21 +80,36 @@ public class SprayManager(CS2_Sprays plugin)
         return string.IsNullOrWhiteSpace(_plugin.Config.Permission) || AdminManager.PlayerHasPermissions(player, _plugin.Config.Permission);
     }
 
-    public SprayModel? GetSelected(CCSPlayerController player)
+    // The saved spray name, RandomSelection, or null when there is nothing to use
+    public string? GetSelection(CCSPlayerController player)
     {
         string? name = CookieReady
             ? _clientprefs!.GetPlayerCookie(player, _cookieId)
             : _selections.GetValueOrDefault(player.SteamID);
 
-        return string.IsNullOrEmpty(name) ? null : _plugin.Config.Sprays.FirstOrDefault(s => s.Name == name);
+        bool random = _plugin.Config.RandomSpray;
+        if (name == RandomSelection || string.IsNullOrEmpty(name))
+            return random ? RandomSelection : null;
+
+        return _plugin.Config.Sprays.Any(s => s.Name == name) ? name : (random ? RandomSelection : null);
     }
 
-    public void Select(CCSPlayerController player, SprayModel spray)
+    public void Select(CCSPlayerController player, string selection)
     {
         if (CookieReady)
-            _clientprefs!.SetPlayerCookie(player, _cookieId, spray.Name);
+            _clientprefs!.SetPlayerCookie(player, _cookieId, selection);
         else
-            _selections[player.SteamID] = spray.Name;
+            _selections[player.SteamID] = selection;
+    }
+
+    private SprayModel? ResolveSpray(CCSPlayerController player)
+    {
+        var sprays = _plugin.Config.Sprays;
+        string? selection = GetSelection(player);
+        if (selection == RandomSelection)
+            return sprays.Count > 0 ? sprays[_random.Next(sprays.Count)] : null;
+
+        return sprays.FirstOrDefault(s => s.Name == selection);
     }
 
     public void OnMapStart()
@@ -146,7 +165,7 @@ public class SprayManager(CS2_Sprays plugin)
             return;
         }
 
-        var spray = GetSelected(player);
+        var spray = ResolveSpray(player);
         if (spray == null)
         {
             Fail(_plugin.Localizer["NoSpraySelected"]);

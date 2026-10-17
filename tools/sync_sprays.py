@@ -41,7 +41,8 @@ REPO = Path(__file__).resolve().parents[1]
 PREVIEW_SIZE = 128  # must match .spray-img in sprays.css
 PREVIEW_DIR = "panorama/images/custom_game/sprays"
 CSS_PATH = "panorama/styles/custom_game/sprays_images.css"
-MENU_FILES = ["panorama/layout/custom_game/sprays.xml", "panorama/styles/custom_game/sprays.css"]
+MENU_FILES = ["panorama/layout/custom_game/sprays.xml", "panorama/styles/custom_game/sprays.css",
+              "panorama/images/custom_game/sprays_random.png"]
 IMAGE_TYPES = {".png", ".jpg", ".jpeg", ".webp", ".bmp", ".tga"}
 
 VMAT = """// THIS FILE IS AUTO-GENERATED
@@ -253,7 +254,7 @@ def main():
 
     if args.compile:
         # Each file on its own: compiling the layout does not recompile a changed stylesheet
-        compile_files(addon, copied + [addon / "materials" / args.folder / f"{sid}.vmat" for sid in written] + [css_file])
+        compile_files(addon, [f for f in copied if f.suffix != ".png"] + [addon / "materials" / args.folder / f"{sid}.vmat" for sid in written] + [css_file])
 
 
 if __name__ == "__main__":

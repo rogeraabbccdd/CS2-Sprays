@@ -60,7 +60,7 @@ python tools/sync_sprays.py --images sprays --config CS2-Sprays.json --addon "<C
 
 Each image gets an id: the file name in lower case, with characters other than `a-z`, `0-9`, `_` and `-` replaced by `_`. `Smile Face.png` becomes `smile_face`.
 
-1. **Copies the menu files.** `sprays.xml` and `sprays.css` are copied from this repo's `addon/` folder into your addon when they are missing. Existing ones are not touched.
+1. **Copies the menu files.** `sprays.xml`, `sprays.css` and `sprays_random.png` are copied from this repo's `addon/` folder into your addon when they are missing. Existing ones are not touched, so after updating the plugin, copy the new menu files over the old ones yourself.
 2. **Writes the sprays.** New images only; existing sprays are skipped unless you pass `--force`.
    - `materials/<folder>/<id>.png`: the image on a black square, turned 90 degrees counterclockwise, so it shows upright on walls.
    - `materials/<folder>/<id>_trans.png`: the translucency mask (white = visible), taken from the image's alpha.

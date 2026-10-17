@@ -39,6 +39,10 @@ namespace CS2_Sprays.Config
         [JsonPropertyName("Spray Sound")]
         public string SpraySound { get; set; } = "SprayCan.Paint";
 
+        // Adds a "Random" card to the menu; players who never chose a spray get a random one
+        [JsonPropertyName("Random Spray")]
+        public bool RandomSpray { get; set; } = true;
+
         // Round restarts remove the decals; this puts every player's spray back
         [JsonPropertyName("Keep Sprays Between Rounds")]
         public bool KeepSpraysBetweenRounds { get; set; } = true;

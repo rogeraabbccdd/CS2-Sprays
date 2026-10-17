@@ -10,5 +10,6 @@
 	"SprayFailed": "{red}Nie udało się umieścić sprayu.",
 	"SpraySelected": "Wybrałeś {green}{0}{default}. Wpisz {green}!spray{default}, aby go użyć.",
 	"Menu_Header": "WYBIERZ SPRAY",
-	"Menu_Close": "Zamknij"
+	"Menu_Close": "Zamknij",
+	"Menu_Random": "Losowy"
 }
