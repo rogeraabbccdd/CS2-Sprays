@@ -1,0 +1,68 @@
+name: Release
+
+# Push a tag like v1.0.0 to build the plugin and publish a GitHub release.
+on:
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0 # tags and history for the release notes
+
+      - uses: actions/setup-dotnet@v5
+        with:
+          dotnet-version: "10.0.x"
+
+      - name: Check the version
+        run: |
+          VERSION="${GITHUB_REF_NAME#v}"
+          MODULE_VERSION=$(grep -oP 'ModuleVersion\s*=>\s*"\K[^"]+' src/CS2_Sprays.cs)
+          if [ "$VERSION" != "$MODULE_VERSION" ]; then
+            echo "::error::Tag $GITHUB_REF_NAME does not match ModuleVersion $MODULE_VERSION in src/CS2_Sprays.cs"
+            exit 1
+          fi
+
+      - name: Build
+        run: dotnet build CS2-Sprays.sln -c Release
+
+      - name: Package
+        run: |
+          OUT=src/bin/Release/net10.0
+          PLUGIN=package/addons/counterstrikesharp/plugins/CS2-Sprays
+          mkdir -p "$PLUGIN"
+          # ClientprefsApi.dll is only used to compile; the server gets it from Clientprefs
+          cp "$OUT/CS2-Sprays.dll" "$OUT/CS2-Sprays.deps.json" "$PLUGIN/"
+          cp -r "$OUT/lang" "$PLUGIN/"
+          (cd package && zip -r "../CS2-Sprays-$GITHUB_REF_NAME.zip" addons)
+          (cd addon && zip -r "../CS2-Sprays-addon-$GITHUB_REF_NAME.zip" .)
+
+      - name: Release notes
+        run: |
+          PREV=$(git describe --tags --abbrev=0 "$GITHUB_REF_NAME^" 2>/dev/null || true)
+          RANGE=${PREV:+$PREV..}$GITHUB_REF_NAME
+          {
+            echo "## Changes"
+            git log --no-merges --format='- %s' "$RANGE"
+            echo
+            echo "## Install"
+            echo "- \`CS2-Sprays-$GITHUB_REF_NAME.zip\`: extract into \`game/csgo/\`"
+            echo "- \`CS2-Sprays-addon-$GITHUB_REF_NAME.zip\`: copy into your workshop addon, compile and publish it"
+            echo
+            echo "Requires CounterStrikeSharp 1.0.374+ and Clientprefs v1.0.7+. See the [README](https://github.com/$GITHUB_REPOSITORY#readme)."
+          } > notes.md
+          cat notes.md
+
+      - name: Publish
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create "$GITHUB_REF_NAME" --title "$GITHUB_REF_NAME" --notes-file notes.md \
+            "CS2-Sprays-$GITHUB_REF_NAME.zip" "CS2-Sprays-addon-$GITHUB_REF_NAME.zip"
